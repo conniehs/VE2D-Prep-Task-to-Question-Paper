@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding the TA Preparatory Task vs. Question Paper</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        prep: {
+                            light: '#FEF08A',
+                            DEFAULT: '#EAB308',
+                            dark: '#CA8A04',
+                            bg: '#FEFCE8'
+                        },
+                        qp: {
+                            light: '#FBCFE8',
+                            DEFAULT: '#EC4899',
+                            dark: '#DB2777',
+                            bg: '#FDF2F8'
+                        }
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'beam': 'beamDash 1.5s linear infinite'
+                    },
+                    keyframes: {
+                        beamDash: {
+                            '0%': { strokeDashoffset: '24' },
+                            '100%': { strokeDashoffset: '0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .audio-wave span {
+            display: inline-block;
+            width: 3px;
+            height: 12px;
+            margin: 0 1px;
+            background-color: #f59e0b;
+            border-radius: 2px;
+            animation: wave 1s ease-in-out infinite;
+        }
+        .audio-wave span:nth-child(2) { animation-delay: 0.15s; }
+        .audio-wave span:nth-child(3) { animation-delay: 0.3s; }
+        .audio-wave span:nth-child(4) { animation-delay: 0.45s; }
+        .audio-wave.paused span {
+            animation: none;
+            height: 4px;
+            background-color: #94a3b8;
+        }
+        @keyframes wave {
+            0%, 100% { height: 4px; }
+            50% { height: 15px; }
+        }
+        .sync-highlight {
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.55);
+            transform: scale(1.015);
+            transition: all 0.3s ease;
+        }
+        .beam-line {
+            stroke-dasharray: 6, 6;
+            animation: beamDash 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-amber-200 selection:text-amber-900">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-tr from-amber-500 to-pink-500 p-2.5 rounded-xl text-white shadow-md">
+                        <i class="fa-solid fa-headphones-simple text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Activity 4: TA Prep Task vs. Question Paper</h1>
+                        <p class="text-xs text-slate-500 font-medium">Interactive Side-by-Side Audio & Mapping Guide</p>
+                    </div>
+                </div>
+
+                <!-- Slide Step Navigation -->
+                <div class="flex items-center space-x-1.5 sm:space-x-2">
+                    <button onclick="goToSlide(currentSlide - 1)" id="btn-prev-slide" class="p-2 sm:px-3 sm:py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold flex items-center transition-colors">
+                        <i class="fa-solid fa-chevron-left sm:mr-1.5"></i> <span class="hidden sm:inline">Prev</span>
+                    </button>
+                    <span id="slide-indicator" class="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-700 rounded-lg">
+                        Slide 1 / 4
+                    </span>
+                    <button onclick="goToSlide(currentSlide + 1)" id="btn-next-slide" class="p-2 sm:px-3 sm:py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold flex items-center shadow-xs transition-colors">
+                        <span class="hidden sm:inline">Next</span> <i class="fa-solid fa-chevron-right sm:ml-1.5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Slide Stepper Progress Bar -->
+    <div class="bg-slate-100 border-b border-slate-200 py-2.5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-4 gap-1.5 sm:gap-3">
+                <button onclick="goToSlide(1)" id="step-btn-1" class="step-nav-btn py-2 px-2 rounded-lg text-[11px] sm:text-xs font-bold text-center transition-all bg-amber-500 text-white shadow-xs truncate">
+                    1. Situation Mapping
+                </button>
+                <button onclick="goToSlide(2)" id="step-btn-2" class="step-nav-btn py-2 px-2 rounded-lg text-[11px] sm:text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 text-center transition-all truncate">
+                    2. Q1 & Q2 → Options
+                </button>
+                <button onclick="goToSlide(3)" id="step-btn-3" class="step-nav-btn py-2 px-2 rounded-lg text-[11px] sm:text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 text-center transition-all truncate">
+                    3. Q3 → Evaluation
+                </button>
+                <button onclick="goToSlide(4)" id="step-btn-4" class="step-nav-btn py-2 px-2 rounded-lg text-[11px] sm:text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 text-center transition-all truncate">
+                    4. Exam Challenge
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
+
+        <!-- PERSISTENT AUDIO GUIDE PLAYER BAR -->
+        <div class="bg-slate-900 text-white rounded-2xl p-3.5 sm:p-4 shadow-lg border border-slate-700">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <button onclick="toggleAudio()" id="btn-audio-play" class="w-10 h-10 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 flex items-center justify-center font-bold shadow-md transition-transform active:scale-95 shrink-0" title="Play / Pause Audio Explanation">
+                        <i id="audio-play-icon" class="fa-solid fa-play ml-0.5"></i>
+                    </button>
+                    <button onclick="replayAudio()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center border border-slate-700 transition-colors shrink-0" title="Replay Slide Audio">
+                        <i class="fa-solid fa-rotate-left text-xs"></i>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <div id="audio-wave" class="audio-wave paused flex items-center h-4 px-1">
+                            <span></span><span></span><span></span><span></span>
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Teacher Voice Guide</span>
+                                <span id="audio-status-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Ready to Listen</span>
+                            </div>
+                            <p id="audio-slide-title" class="text-xs text-slate-300 font-medium">Slide 1: Understanding the Situation</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speed & Interactive Sync Controls -->
+                <div class="flex items-center justify-between md:justify-end space-x-2 border-t md:border-t-0 border-slate-800 pt-2.5 md:pt-0">
+                    <div class="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700 text-[11px] font-bold">
+                        <span class="px-2 text-slate-400"><i class="fa-solid fa-gauge-high"></i></span>
+                        <button onclick="setSpeechRate(0.85)" id="rate-0.85" class="rate-btn px-2 py-1 rounded-md text-slate-300 hover:text-white">0.85x</button>
+                        <button onclick="setSpeechRate(1.0)" id="rate-1" class="rate-btn px-2 py-1 rounded-md bg-amber-400 text-slate-950">1.0x</button>
+                        <button onclick="setSpeechRate(1.15)" id="rate-1.15" class="rate-btn px-2 py-1 rounded-md text-slate-300 hover:text-white">1.15x</button>
+                    </div>
+                    <button onclick="toggleTranscript()" id="btn-toggle-caption" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center" title="Toggle Live Subtitles">
+                        <i class="fa-solid fa-closed-captioning text-amber-400 mr-1.5"></i> Captions
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Synchronized Transcript Banner -->
+            <div id="live-transcript-box" class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-start space-x-2.5">
+                <i class="fa-solid fa-quote-left text-amber-500/60 text-xs mt-1 shrink-0"></i>
+                <p id="live-transcript-text" class="text-xs sm:text-sm text-amber-100/95 leading-relaxed font-medium">
+                    Click Play above to hear the teacher explain how the Situation in the Preparatory Task prepares you for the Question Paper!
+                </p>
+            </div>
+        </div>
+
+
+        <!-- ================= SLIDE 1: MAPPING PART 1 - THE SITUATION ================= -->
+        <section id="slide-1" class="slide-content space-y-5">
+            <!-- Slide Header & Progress -->
+            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-md uppercase tracking-wider">Mapping Part 1 of 3</span>
+                    <h2 class="text-lg sm:text-xl font-bold text-slate-900 mt-1">Situation Mapping: Spot-the-Difference & Role Analyzer</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Click the <strong class="text-amber-700">4 glowing tokens</strong> in the Preparatory Task on the left to beam connections across to the Question Paper.</p>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200 shrink-0">
+                    <span class="text-xs font-bold text-slate-600">Tokens Beamed:</span>
+                    <span id="s1-progress-badge" class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-950">0 / 4</span>
+                </div>
+            </div>
+
+            <!-- Side-by-Side Comparison Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-11 gap-4 items-stretch relative">
+
+                <!-- LEFT SIDE: PREPARATORY TASK (5 cols) -->
+                <div id="s1-prep-card" class="lg:col-span-5 bg-amber-50/80 rounded-2xl border-2 border-amber-300 p-5 shadow-sm flex flex-col justify-between space-y-4 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4 border-b border-amber-200 pb-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-amber-400 text-amber-950 font-extrabold text-xs px-2.5 py-1 rounded-md uppercase shadow-2xs">Preparatory Task</span>
+                                <span class="text-xs text-amber-900 font-bold">Activity 4</span>
+                            </div>
+                            <span class="text-[11px] font-semibold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">Click tokens below 👇</span>
+                        </div>
+
+                        <div class="bg-white p-4 sm:p-5 rounded-xl border border-amber-200 space-y-3.5 text-xs sm:text-sm text-slate-700 shadow-xs leading-relaxed">
+                            <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-2">Situation:</h3>
+                            <p>
+                                You are 
+                                <button onclick="beamToken('role')" id="tok-role" class="s1-token inline-flex items-center px-2 py-0.5 rounded-md bg-amber-100 hover:bg-amber-300 text-amber-950 font-bold border border-amber-400 transition-all cursor-pointer shadow-2xs">
+                                    <span>Mike Lee, Event Officer at One Media</span>
+                                    <i class="fa-solid fa-bolt text-[10px] ml-1.5 text-amber-600"></i>
+                                </button>.
+                            </p>
+                            <p>
+                                Your company is going 
+                                <button onclick="beamToken('event')" id="tok-event" class="s1-token inline-flex items-center px-2 py-0.5 rounded-md bg-amber-100 hover:bg-amber-300 text-amber-950 font-bold underline decoration-amber-600 border border-amber-400 transition-all cursor-pointer shadow-2xs">
+                                    <span>to organise an anniversary concert</span>
+                                    <i class="fa-solid fa-bolt text-[10px] ml-1.5 text-amber-600"></i>
+                                </button>.
+                            </p>
+                            <p>
+                                Your colleague, 
+                                <button onclick="beamToken('recipient')" id="tok-recipient" class="s1-token inline-flex items-center px-2 py-0.5 rounded-md bg-amber-100 hover:bg-amber-300 text-amber-950 font-bold border border-amber-400 transition-all cursor-pointer shadow-2xs">
+                                    <span>May Chan</span>
+                                    <i class="fa-solid fa-bolt text-[10px] ml-1.5 text-amber-600"></i>
+                                </button>, has spoken to you about the choices of event ticketing platform.
+                            </p>
+                            <p>
+                                You need to write an email to her to 
+                                <button onclick="beamToken('task')" id="tok-task" class="s1-token inline-flex items-center px-2 py-0.5 rounded-md bg-amber-100 hover:bg-amber-300 text-amber-950 font-bold border border-amber-400 transition-all cursor-pointer shadow-2xs">
+                                    <span>express your preference with explanations</span>
+                                    <i class="fa-solid fa-bolt text-[10px] ml-1.5 text-amber-600"></i>
+                                </button>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="s1-token-inspector" class="bg-amber-100/90 p-3.5 rounded-xl border border-amber-300 text-xs text-amber-950">
+                        <span class="font-bold"><i class="fa-solid fa-hand-pointer mr-1.5 text-amber-700"></i>Interactive Tip:</span> Click any highlighted phrase above to analyze how it transfers directly to your exam paper!
+                    </div>
+                </div>
+
+                <!-- CENTER BRIDGE CONNECTOR (1 col) -->
+                <div class="lg:col-span-1 flex lg:flex-col items-center justify-center py-2">
+                    <div class="hidden lg:flex flex-col items-center justify-center h-full space-y-2">
+                        <div class="w-0.5 flex-1 bg-gradient-to-b from-amber-300 to-pink-300"></div>
+                        <div id="s1-bridge-icon" class="w-10 h-10 rounded-full bg-white border-2 border-slate-300 shadow-md flex items-center justify-center text-slate-600 transition-all">
+                            <i class="fa-solid fa-arrow-right text-sm"></i>
+                        </div>
+                        <div class="w-0.5 flex-1 bg-gradient-to-b from-amber-300 to-pink-300"></div>
+                    </div>
+                    <div class="lg:hidden flex items-center space-x-2 text-slate-500 font-bold text-xs">
+                        <i class="fa-solid fa-arrow-down text-amber-500"></i>
+                        <span>Maps Directly To</span>
+                        <i class="fa-solid fa-arrow-down text-pink-500"></i>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE: QUESTION PAPER (5 cols) -->
+                <div id="s1-qp-card" class="lg:col-span-5 bg-pink-50/80 rounded-2xl border-2 border-pink-300 p-5 shadow-sm flex flex-col justify-between space-y-4 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4 border-b border-pink-200 pb-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-pink-500 text-white font-extrabold text-xs px-2.5 py-1 rounded-md uppercase shadow-2xs">Question Paper</span>
+                                <span class="text-xs text-pink-900 font-bold">Exam Day Assessment</span>
+                            </div>
+                            <span id="s1-qp-status" class="text-[11px] font-bold text-pink-700 bg-pink-100 px-2 py-0.5 rounded-md">Waiting for tokens...</span>
+                        </div>
+
+                        <div class="bg-white p-4 sm:p-5 rounded-xl border border-pink-200 space-y-3.5 text-xs sm:text-sm text-slate-700 shadow-xs leading-relaxed">
+                            <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-2">Assessment Situation:</h3>
+                            <p>
+                                You are <span id="qp-role" class="px-1.5 py-0.5 rounded transition-all bg-slate-100 text-slate-500 font-medium">Mike Lee, Event Officer at One Media</span>.
+                            </p>
+                            <p>
+                                Your company is going <span id="qp-event" class="px-1.5 py-0.5 rounded transition-all bg-slate-100 text-slate-500 font-medium">to organise an anniversary concert</span>. Your colleague, <span id="qp-recipient" class="px-1.5 py-0.5 rounded transition-all bg-slate-100 text-slate-500 font-medium">May Chan</span>, has spoken to you about the choices of event ticketing platform.
+                            </p>
+                            <p>
+                                <span id="qp-new-1" class="inline-block px-1.5 py-0.5 rounded bg-slate-100 text-slate-400 transition-all">Use all your notes below to write an email to her.</span> You should <span id="qp-task" class="px-1.5 py-0.5 rounded transition-all bg-slate-100 text-slate-500 font-medium">express your preference with explanations</span>.
+                            </p>
+                            <div id="qp-new-2" class="p-2.5 rounded-lg border border-dashed border-slate-300 bg-slate-50 text-slate-400 font-bold text-xs transition-all flex items-center justify-between">
+                                <span><i class="fa-solid fa-lock mr-1.5"></i> Exam-only instruction locked (Beam all 4 tokens to unlock)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-pink-100/90 p-3.5 rounded-xl border border-pink-300 text-xs text-pink-950">
+                        <i class="fa-solid fa-circle-info text-pink-600 mr-1.5"></i> <strong>Why this matters:</strong> Because the situation is nearly identical, you already know your persona and audience before the exam timer even starts!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 1 Mini-Check Activity -->
+            <div id="s1-minicheck" class="bg-white rounded-2xl p-5 border-2 border-slate-200 shadow-sm space-y-3">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-sm font-bold text-slate-900 flex items-center">
+                        <span class="w-6 h-6 rounded-full bg-amber-400 text-slate-950 text-xs font-extrabold flex items-center justify-center mr-2">?</span>
+                        Quick Check: What new exam-day requirement appears on the Question Paper that wasn't in the Preparatory Task?
+                    </h4>
+                    <span id="s1-check-badge" class="hidden text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">✓ Verified!</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    <button onclick="checkS1Answer(0)" class="s1-opt p-3 rounded-xl border border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 text-left text-xs font-semibold text-slate-700 transition-all">
+                        A. A completely different company and colleague name
+                    </button>
+                    <button onclick="checkS1Answer(1)" class="s1-opt p-3 rounded-xl border border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 text-left text-xs font-semibold text-slate-700 transition-all">
+                        B. Instructions to use all notes below & write 130–150 words
+                    </button>
+                    <button onclick="checkS1Answer(2)" class="s1-opt p-3 rounded-xl border border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 text-left text-xs font-semibold text-slate-700 transition-all">
+                        C. Writing a formal speech instead of an email
+                    </button>
+                </div>
+                <p id="s1-check-feedback" class="hidden text-xs font-medium p-3 rounded-xl"></p>
+            </div>
+        </section>
+
+
+        <!-- ================= SLIDE 2: MAPPING PART 2 - Q1 & Q2 TO OPTIONS ================= -->
+        <section id="slide-2" class="slide-content hidden space-y-5">
+            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-md uppercase tracking-wider">Mapping Part 2 of 3</span>
+                    <h2 class="text-lg sm:text-xl font-bold text-slate-900 mt-1">Research-to-Exam Bridge: Questions 1 & 2 → Option Descriptions</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Step 1: Click <strong>Q1 & Q2 Research Cards</strong> on the left to uncover background clues. Step 2: Match those clues to the Question Paper options on the right!</p>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200 shrink-0">
+                    <span class="text-xs font-bold text-slate-600">Clues Matched:</span>
+                    <span id="s2-progress-badge" class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-950">0 / 2</span>
+                </div>
+            </div>
+
+            <!-- Side-by-Side Comparison Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-11 gap-4 items-stretch">
+
+                <!-- LEFT SIDE: PREPARATORY TASK Q1 & Q2 (5 cols) -->
+                <div id="s2-prep-card" class="lg:col-span-5 bg-amber-50/80 rounded-2xl border-2 border-amber-300 p-5 shadow-sm flex flex-col justify-between space-y-4">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-amber-200 pb-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-amber-400 text-amber-950 font-extrabold text-xs px-2.5 py-1 rounded-md uppercase">Preparatory Task</span>
+                                <span class="text-xs text-amber-900 font-bold">Questions 1 & 2</span>
+                            </div>
+                            <span class="text-[11px] font-semibold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">Online Research</span>
+                        </div>
+
+                        <!-- Interactive Q1 Card -->
+                        <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-xs space-y-2.5">
+                            <div class="flex items-start justify-between gap-2">
+                                <p class="text-xs sm:text-sm font-bold text-slate-800">1. What is an event ticketing platform? What do people do with it?</p>
+                                <button onclick="revealResearch(1)" id="btn-res-1" class="shrink-0 px-2.5 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs transition-all shadow-2xs">
+                                    <i class="fa-solid fa-magnifying-glass mr-1"></i> Simulate Research
+                                </button>
+                            </div>
+                            <div id="res-1-result" class="hidden p-3 rounded-lg bg-amber-50 border border-amber-300 text-xs text-slate-700 space-y-1.5">
+                                <div class="font-bold text-amber-900"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Research Finding #1:</div>
+                                <p>Platforms sell tickets online via <strong>web browsers and mobile apps</strong>, letting organizers manage seat bookings and customer access smoothly.</p>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Q2 Card -->
+                        <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-xs space-y-2.5">
+                            <div class="flex items-start justify-between gap-2">
+                                <p class="text-xs sm:text-sm font-bold text-slate-800">2. Have you ever used any platform such as <em>HK Ticketing</em>? Name other platforms.</p>
+                                <button onclick="revealResearch(2)" id="btn-res-2" class="shrink-0 px-2.5 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs transition-all shadow-2xs">
+                                    <i class="fa-solid fa-magnifying-glass mr-1"></i> Simulate Research
+                                </button>
+                            </div>
+                            <div id="res-2-result" class="hidden p-3 rounded-lg bg-amber-50 border border-amber-300 text-xs text-slate-700 space-y-1.5">
+                                <div class="font-bold text-amber-900"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Research Finding #2:</div>
+                                <p>Major HK platforms (like <strong>URBTIX / HK Ticketing</strong>) are known for high popularity and handling official <strong>government & cultural events</strong>.</p>
+                            </div>
+                        </div>
+
+                        <!-- Selectable Clue Chips for Matching -->
+                        <div id="s2-clue-tray" class="hidden bg-white p-3.5 rounded-xl border-2 border-dashed border-amber-400 space-y-2">
+                            <p class="text-xs font-bold text-slate-800"><i class="fa-solid fa-hand-pointer text-amber-500 mr-1"></i> Select a Research Clue below, then click its matching Option on the right:</p>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="selectClue('gov')" id="clue-chip-gov" class="clue-chip px-3 py-1.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-400 text-xs font-bold transition-all">
+                                    Clue A: Popular HK site + Government events
+                                </button>
+                                <button onclick="selectClue('est')" id="clue-chip-est" class="clue-chip px-3 py-1.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-400 text-xs font-bold transition-all">
+                                    Clue B: Well-established web & app ticketing
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-100/90 p-3.5 rounded-xl border border-amber-300 text-xs text-amber-950">
+                        <i class="fa-solid fa-compass text-amber-700 mr-1.5"></i> <strong>Key Takeaway:</strong> Even though Option names aren't given in the prep task, researching real examples prepares you for the descriptions on exam day!
+                    </div>
+                </div>
+
+                <!-- CENTER BRIDGE CONNECTOR (1 col) -->
+                <div class="lg:col-span-1 flex lg:flex-col items-center justify-center py-2">
+                    <div class="hidden lg:flex flex-col items-center justify-center h-full space-y-2">
+                        <div class="w-0.5 flex-1 bg-gradient-to-b from-amber-300 to-pink-300"></div>
+                        <div class="w-10 h-10 rounded-full bg-white border-2 border-slate-300 shadow-md flex items-center justify-center text-slate-600">
+                            <i class="fa-solid fa-link text-sm"></i>
+                        </div>
+                        <div class="w-0.5 flex-1 bg-gradient-to-b from-amber-300 to-pink-300"></div>
+                    </div>
+                    <div class="lg:hidden flex items-center space-x-2 text-slate-500 font-bold text-xs">
+                        <i class="fa-solid fa-arrow-down text-amber-500"></i>
+                        <span>Connects To Options</span>
+                        <i class="fa-solid fa-arrow-down text-pink-500"></i>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE: QUESTION PAPER DESCRIPTION (5 cols) -->
+                <div id="s2-qp-card" class="lg:col-span-5 bg-pink-50/80 rounded-2xl border-2 border-pink-300 p-5 shadow-sm flex flex-col justify-between space-y-4">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-pink-200 pb-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-pink-500 text-white font-extrabold text-xs px-2.5 py-1 rounded-md uppercase">Question Paper</span>
+                                <span class="text-xs text-pink-900 font-bold">Description Section</span>
+                            </div>
+                            <span class="text-[11px] font-semibold text-pink-800 bg-pink-100 px-2 py-0.5 rounded-md">Exam Day Options</span>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-xl border border-pink-200 space-y-3.5 text-xs sm:text-sm text-slate-700 shadow-xs">
+                            <h3 class="font-bold text-slate-900 text-base underline decoration-pink-400">Description:</h3>
+                            
+                            <!-- Option 1 Target -->
+                            <div onclick="assignClueToOption(1)" id="opt-card-1" class="p-3.5 rounded-xl border-2 border-slate-200 hover:border-pink-400 bg-slate-50/70 transition-all cursor-pointer space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-extrabold text-slate-900 text-sm">Option 1: City Tickets</span>
+                                    <span id="opt-1-badge" class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-600">Click to match clue</span>
+                                </div>
+                                <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                    <li>most popular ticketing site in HK</li>
+                                    <li>provide ticketing services for government events</li>
+                                </ul>
+                            </div>
+
+                            <!-- Option 2 Target -->
+                            <div onclick="assignClueToOption(2)" id="opt-card-2" class="p-3.5 rounded-xl border-2 border-slate-200 hover:border-pink-400 bg-slate-50/70 transition-all cursor-pointer space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-extrabold text-slate-900 text-sm">Option 2: TicketEasy</span>
+                                    <span id="opt-2-badge" class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-600">Click to match clue</span>
+                                </div>
+                                <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                    <li>well-established ticketing platform</li>
+                                    <li>offer both browser and mobile app access</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="s2-feedback-box" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+                    </div>
+
+                    <div class="bg-pink-100/90 p-3.5 rounded-xl border border-pink-300 text-xs text-pink-950">
+                        <i class="fa-solid fa-check-double text-pink-600 mr-1.5"></i> <strong>Exam Advantage:</strong> Students who researched real HK platforms immediately understand why government event experience makes <em>City Tickets</em> trustworthy!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SLIDE 3: MAPPING PART 3 - Q3 TO EVALUATION ================= -->
+        <section id="slide-3" class="slide-content hidden space-y-5">
+            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-md uppercase tracking-wider">Mapping Part 3 of 3</span>
+                    <h2 class="text-lg sm:text-xl font-bold text-slate-900 mt-1">Criteria Explorer & Prompt Builder: Question 3 → Evaluation Table</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Click criteria in <strong>Question 3</strong> on the left to see where they appear on the Question Paper, then click the red <strong class="text-rose-600">?</strong> prompts to build your exam points!</p>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200 shrink-0">
+                    <span class="text-xs font-bold text-slate-600">Prompts Solved:</span>
+                    <span id="s3-progress-badge" class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-950">0 / 2</span>
+                </div>
+            </div>
+
+            <!-- Side-by-Side Comparison Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-11 gap-4 items-stretch">
+
+                <!-- LEFT SIDE: PREPARATORY TASK Q3 TABLE (5 cols) -->
+                <div id="s3-prep-card" class="lg:col-span-5 bg-amber-50/80 rounded-2xl border-2 border-amber-300 p-5 shadow-sm flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between border-b border-amber-200 pb-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-amber-400 text-amber-950 font-extrabold text-xs px-2.5 py-1 rounded-md uppercase">Preparatory Task</span>
+                                <span class="text-xs text-amber-900 font-bold">Question 3</span>
+                            </div>
+                            <span class="text-[11px] font-semibold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">Click a row to map 👇</span>
+                        </div>
+
+                        <div class="bg-white p-3.5 rounded-xl border border-amber-200 shadow-xs space-y-2.5">
+                            <p class="text-xs text-slate-700 font-medium leading-relaxed">
+                                <strong>3.</strong> When you choose an event ticketing platform, a number of things should be considered. Do some research on these things and complete the table below.
+                            </p>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-xs text-left text-slate-700 border-collapse">
+                                    <thead class="bg-amber-100 text-slate-900 font-bold text-[11px]">
+                                        <tr>
+                                            <th class="p-2 border border-amber-300" rowspan="2">Things to consider</th>
+                                            <th class="p-1.5 border border-amber-300 text-center" colspan="2">Elaboration</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="p-1 border border-amber-300 text-center text-emerald-700">✓</th>
+                                            <th class="p-1 border border-amber-300 text-center text-rose-700">✗</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200 font-medium">
+                                        <tr onclick="selectCriterion('Security')" id="crit-row-Security" class="crit-row hover:bg-amber-50 cursor-pointer transition-colors">
+                                            <td class="p-2 border border-slate-200 font-bold text-slate-800 flex items-center justify-between">
+                                                <span>Security</span> <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i>
+                                            </td>
+                                            <td class="p-2 border border-slate-200 text-center text-[11px] text-slate-500">Safe payment</td>
+                                            <td class="p-2 border border-slate-200 text-center text-[11px] text-slate-500">Data leak risk</td>
+                                        </tr>
+                                        <tr onclick="selectCriterion('Cost')" id="crit-row-Cost" class="crit-row hover:bg-amber-50 cursor-pointer transition-colors">
+                                            <td class="p-2 border border-slate-200 font-bold text-amber-900 bg-amber-50/60 flex items-center justify-between">
+                                                <span>Cost <span class="text-[9px] bg-pink-100 text-pink-800 px-1.5 py-0.2 rounded ml-1">On Exam</span></span> <i class="fa-solid fa-arrow-right text-[10px] text-amber-600"></i>
+                                            </td>
+                                            <td class="p-2 border border-slate-200 text-center text-[11px] text-slate-500">Low service fee</td>
+                                            <td class="p-2 border border-slate-200 text-center text-[11px] text-slate-500">High commission</td>
+                                        </tr>
+                                        <tr onclick="selectCriterion('Stability')" id="crit-row-Stability" class="crit-row hover:bg-amber-50 cursor-pointer transition-colors">
+                                            <td class="p-2 border border-slate-200 font-bold text-slate-800 flex items-center justify-between">
+                                                <span>Stability</span> <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i>
+                                            </td>
+                                            <td class="p-2 border border-slate-200 text-center text-[11px] text-slate-500">Handles high traffic</td>
+                                            <td class="p-2 border border-slate-200 text-center text-[11px] text-slate-500">Server crashes</td>
+                                        </tr>
+                                        <tr onclick="selectCriterion('System design')" id="crit-row-System design" class="crit-row hover:bg-amber-50 cursor-pointer transition-colors">
+                                            <td class="p-2 border border-slate-200 font-bold text-amber-900 bg-amber-50/60 flex items-center justify-between">
+                                                <span>System design <span class="text-[9px] bg-pink-100 text-pink-800 px-1.5 py-0.2 rounded ml-1">On Exam</span></span> <i class="fa-solid fa-arrow-right text-[10px] text-amber-600"></i>
+                                            </td>
+                                            <td class="p-2 border border-slate-200 text-center text-[11px] text-slate-500">User-friendly UI</td>
+                                            <td class="p-2 border border-slate-200 text-center text-[11px] text-slate-500">Confusing layout</td>
+                                        </tr>
+                                        <tr onclick="selectCriterion('Services')" id="crit-row-Services" class="crit-row hover:bg-amber-50 cursor-pointer transition-colors">
+                                            <td class="p-2 border border-slate-200 font-bold text-amber-900 bg-amber-50/60 flex items-center justify-between">
+                                                <span>Services <span class="text-[9px] bg-pink-100 text-pink-800 px-1.5 py-0.2 rounded ml-1">On Exam</span></span> <i class="fa-solid fa-arrow-right text-[10px] text-amber-600"></i>
+                                            </td>
+                                            <td class="p-2 border border-slate-200 text-center text-[11px] text-slate-500">24/7 support</td>
+                                            <td class="p-2 border border-slate-200 text-center text-[11px] text-slate-500">Slow hotline</td>
+                                        </tr>
+                                        <tr onclick="selectCriterion('Others')" id="crit-row-Others" class="crit-row hover:bg-amber-50 cursor-pointer transition-colors">
+                                            <td class="p-2 border border-slate-200 font-bold text-amber-900 bg-amber-50/60 flex items-center justify-between">
+                                                <span>Others: _______ <span class="text-[9px] bg-pink-100 text-pink-800 px-1.5 py-0.2 rounded ml-1">On Exam</span></span> <i class="fa-solid fa-arrow-right text-[10px] text-amber-600"></i>
+                                            </td>
+                                            <td class="p-2 border border-slate-200 text-center text-[11px] text-slate-500">Brand reputation</td>
+                                            <td class="p-2 border border-slate-200 text-center text-[11px] text-slate-500">Less well-known</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="s3-crit-detail" class="bg-amber-100/90 p-3.5 rounded-xl border border-amber-300 text-xs text-amber-950">
+                        <i class="fa-solid fa-hand-pointer text-amber-700 mr-1.5"></i> <strong>Click any row above</strong> (especially <em>Services, Cost, System design,</em> or <em>Others</em>) to see how your prep notes directly answer the Question Paper!
+                    </div>
+                </div>
+
+                <!-- CENTER BRIDGE CONNECTOR (1 col) -->
+                <div class="lg:col-span-1 flex lg:flex-col items-center justify-center py-2">
+                    <div class="hidden lg:flex flex-col items-center justify-center h-full space-y-2">
+                        <div class="w-0.5 flex-1 bg-gradient-to-b from-amber-300 to-pink-300"></div>
+                        <div class="w-10 h-10 rounded-full bg-white border-2 border-slate-300 shadow-md flex items-center justify-center text-slate-600">
+                            <i class="fa-solid fa-arrows-left-right text-sm"></i>
+                        </div>
+                        <div class="w-0.5 flex-1 bg-gradient-to-b from-amber-300 to-pink-300"></div>
+                    </div>
+                    <div class="lg:hidden flex items-center space-x-2 text-slate-500 font-bold text-xs">
+                        <i class="fa-solid fa-arrow-down text-amber-500"></i>
+                        <span>Appears As Exam Prompts</span>
+                        <i class="fa-solid fa-arrow-down text-pink-500"></i>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE: QUESTION PAPER EVALUATION TABLE (5 cols) -->
+                <div id="s3-qp-card" class="lg:col-span-5 bg-pink-50/80 rounded-2xl border-2 border-pink-300 p-5 shadow-sm flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between border-b border-pink-200 pb-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-pink-500 text-white font-extrabold text-xs px-2.5 py-1 rounded-md uppercase">Question Paper</span>
+                                <span class="text-xs text-pink-900 font-bold">Evaluation Section</span>
+                            </div>
+                            <span class="text-[11px] font-semibold text-pink-800 bg-pink-100 px-2 py-0.5 rounded-md">Click red "?" to solve 👇</span>
+                        </div>
+
+                        <div class="bg-white p-3.5 rounded-xl border border-pink-200 shadow-xs space-y-3">
+                            <h3 class="font-bold text-slate-900 text-sm underline decoration-pink-400">Evaluation:</h3>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-xs text-left text-slate-700 border-collapse">
+                                    <thead class="bg-slate-100 text-slate-900 font-bold text-[11px]">
+                                        <tr>
+                                            <th class="p-2 border border-slate-300">Option</th>
+                                            <th class="p-2 border border-slate-300">Platform</th>
+                                            <th class="p-2 border border-slate-300 text-center text-emerald-700">✓ (Pros)</th>
+                                            <th class="p-2 border border-slate-300 text-center text-rose-700">✗ (Cons)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Option 1 Row -->
+                                        <tr id="qp-eval-row-1" class="transition-all">
+                                            <td class="p-2 border border-slate-300 text-center font-bold">
+                                                <div>1</div>
+                                                <div class="text-lg mt-1" title="Preferred Option">👍</div>
+                                            </td>
+                                            <td class="p-2 border border-slate-300 font-bold text-slate-900">City Tickets</td>
+                                            <td class="p-2 border border-slate-300 space-y-2">
+                                                <div>• a variety of optional <span id="qp-highlight-services" class="font-bold text-slate-900 px-1 rounded">services</span> (24/7 live hotline & website integration)</div>
+                                                <button onclick="openPromptBuilder(1)" id="btn-prompt-1" class="w-full text-left p-2 rounded-lg bg-rose-50 hover:bg-rose-100 border-2 border-dashed border-rose-400 text-rose-700 font-extrabold text-xs flex items-center justify-between transition-all">
+                                                    <span>➔ <span class="text-base">?</span> (What benefit?)</span>
+                                                    <span class="text-[10px] bg-rose-600 text-white px-1.5 py-0.5 rounded">Solve</span>
+                                                </button>
+                                            </td>
+                                            <td class="p-2 border border-slate-300 text-center text-slate-400">—</td>
+                                        </tr>
+
+                                        <!-- Option 2 Row -->
+                                        <tr id="qp-eval-row-2" class="transition-all">
+                                            <td class="p-2 border border-slate-300 text-center font-bold">2</td>
+                                            <td class="p-2 border border-slate-300 font-bold text-slate-900">TicketEasy</td>
+                                            <td class="p-2 border border-slate-300 space-y-1">
+                                                <div>• offer both browser and mobile app access</div>
+                                                <div class="text-emerald-700 font-semibold">➔ convenient for customers</div>
+                                            </td>
+                                            <td class="p-2 border border-slate-300">
+                                                <button onclick="openPromptBuilder(2)" id="btn-prompt-2" class="w-full text-center p-2 rounded-lg bg-rose-50 hover:bg-rose-100 border-2 border-dashed border-rose-400 text-rose-700 font-extrabold text-xs flex flex-col items-center justify-center transition-all">
+                                                    <span class="text-base">?</span>
+                                                    <span class="text-[10px] bg-rose-600 text-white px-1.5 py-0.5 rounded mt-1">Any concern?</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Sticky Note Callout from Original Document -->
+                            <div class="bg-amber-100 border-l-4 border-amber-500 p-3 rounded-r-xl shadow-2xs text-xs space-y-1">
+                                <div class="font-extrabold text-rose-700 flex items-center">
+                                    <i class="fa-solid fa-note-sticky text-amber-600 mr-1.5"></i> Exam Sticky Note Hint (for Option 2's "?"):
+                                </div>
+                                <p class="text-slate-700">Any concern? <strong class="text-slate-900">• Cost? • System design? • Others?</strong> — <em>"Let me choose <u>one</u> & elaborate further."</em></p>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Prompt Builder Drawer -->
+                        <div id="prompt-builder-box" class="hidden bg-slate-900 text-white p-4 rounded-xl border border-slate-700 space-y-2.5 shadow-md">
+                            <div class="flex items-center justify-between">
+                                <span id="pb-title" class="text-xs font-extrabold text-amber-400 uppercase tracking-wider">Prompt Builder</span>
+                                <button onclick="closePromptBuilder()" class="text-slate-400 hover:text-white text-xs"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <p id="pb-question" class="text-xs text-slate-200 font-medium"></p>
+                            <div id="pb-options" class="space-y-1.5"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-pink-100/90 p-3.5 rounded-xl border border-pink-300 text-xs text-pink-950">
+                        <i class="fa-solid fa-wand-magic-sparkles text-pink-600 mr-1.5"></i> <strong>Effort = Ideas:</strong> If you brainstormed pros & cons in Question 3, you already have ready-made sentences to fill in both red "?" prompts!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SLIDE 4: EXAM READINESS CHALLENGE & QUIZ ================= -->
+        <section id="slide-4" class="slide-content hidden space-y-5">
+            <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm max-w-5xl mx-auto space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
+                    <div>
+                        <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider bg-emerald-100 px-2.5 py-1 rounded-md">Final Challenge</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-1">Exam Readiness Check: Prep Task → Question Paper</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Complete both Part A (Quick Connection Matcher) and Part B (Scenario Quiz) to earn your Exam Readiness Badge!</p>
+                    </div>
+                    <div id="quiz-score-badge" class="bg-slate-900 text-amber-400 font-extrabold text-xs sm:text-sm px-4 py-2 rounded-xl shadow-xs shrink-0 self-start sm:self-center">
+                        Total Score: 0 / 6
+                    </div>
+                </div>
+
+                <!-- PART A: 3-WAY MAPPING MATCHER -->
+                <div class="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
+                    <h3 class="text-sm font-bold text-slate-900 flex items-center">
+                        <span class="w-6 h-6 rounded-lg bg-amber-400 text-slate-950 text-xs font-extrabold flex items-center justify-center mr-2">A</span>
+                        Part A: Match Each Preparatory Task Section to Its Question Paper Equivalent
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2">
+                            <span class="text-[11px] font-extrabold text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Prep: Situation Box</span>
+                            <p class="text-xs text-slate-600">"You are Mike Lee, Event Officer at One Media..."</p>
+                            <select onchange="checkMatchAnswer(0, this.value)" id="match-sel-0" class="w-full text-xs font-semibold p-2 rounded-lg border border-slate-300 bg-slate-50 focus:border-amber-500 focus:outline-none">
+                                <option value="">-- Select Question Paper Part --</option>
+                                <option value="sit">Almost identical Assessment Situation & Role</option>
+                                <option value="desc">Description of Option 1 & Option 2</option>
+                                <option value="eval">Evaluation Table prompts & concerns (?)</option>
+                            </select>
+                            <div id="match-fb-0" class="text-[11px] font-bold hidden"></div>
+                        </div>
+
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2">
+                            <span class="text-[11px] font-extrabold text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Prep: Questions 1 & 2</span>
+                            <p class="text-xs text-slate-600">"Research event ticketing platforms such as HK Ticketing..."</p>
+                            <select onchange="checkMatchAnswer(1, this.value)" id="match-sel-1" class="w-full text-xs font-semibold p-2 rounded-lg border border-slate-300 bg-slate-50 focus:border-amber-500 focus:outline-none">
+                                <option value="">-- Select Question Paper Part --</option>
+                                <option value="sit">Almost identical Assessment Situation & Role</option>
+                                <option value="desc">Description of Option 1 & Option 2</option>
+                                <option value="eval">Evaluation Table prompts & concerns (?)</option>
+                            </select>
+                            <div id="match-fb-1" class="text-[11px] font-bold hidden"></div>
+                        </div>
+
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2">
+                            <span class="text-[11px] font-extrabold text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Prep: Question 3 Table</span>
+                            <p class="text-xs text-slate-600">"Things to consider: Security, Cost, Stability, System design, Services..."</p>
+                            <select onchange="checkMatchAnswer(2, this.value)" id="match-sel-2" class="w-full text-xs font-semibold p-2 rounded-lg border border-slate-300 bg-slate-50 focus:border-amber-500 focus:outline-none">
+                                <option value="">-- Select Question Paper Part --</option>
+                                <option value="sit">Almost identical Assessment Situation & Role</option>
+                                <option value="desc">Description of Option 1 & Option 2</option>
+                                <option value="eval">Evaluation Table prompts & concerns (?)</option>
+                            </select>
+                            <div id="match-fb-2" class="text-[11px] font-bold hidden"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PART B: SCENARIO MULTIPLE CHOICE -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-slate-900 flex items-center">
+                        <span class="w-6 h-6 rounded-lg bg-pink-500 text-white text-xs font-extrabold flex items-center justify-center mr-2">B</span>
+                        Part B: Strategy Check Questions
+                    </h3>
+                    <div id="quiz-container" class="space-y-4">
+                        <!-- Dynamic rendering via JS -->
+                    </div>
+                </div>
+
+                <!-- Quiz Completion Card -->
+                <div id="quiz-completion-box" class="hidden bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-2xl p-6 text-center space-y-3 shadow-sm">
+                    <div class="w-14 h-14 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto text-2xl shadow-md">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-emerald-950">You're Ready for the Assessment!</h3>
+                    <p id="quiz-final-msg" class="text-xs sm:text-sm text-emerald-800 max-w-xl mx-auto font-medium"></p>
+                    <div class="pt-2 flex flex-wrap justify-center gap-3">
+                        <button onclick="resetQuiz()" class="bg-white border border-emerald-300 text-emerald-800 hover:bg-emerald-100 font-bold text-xs px-4 py-2.5 rounded-xl transition-all">
+                            <i class="fa-solid fa-rotate-right mr-1.5"></i> Reset Challenge
+                        </button>
+                        <button onclick="goToSlide(1)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md">
+                            Review From Slide 1
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Page Navigation Controls -->
+    <footer class="bg-white border-t border-slate-200 py-3.5 mt-auto sticky bottom-0 z-30 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+            <button onclick="goToSlide(currentSlide - 1)" id="footer-btn-prev" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold flex items-center transition-all">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Previous Page
+            </button>
+            
+            <div class="flex items-center space-x-2" id="slide-dots">
+                <!-- Dots rendered via JS -->
+            </div>
+
+            <button onclick="goToSlide(currentSlide + 1)" id="footer-btn-next" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs flex items-center transition-all shadow-md">
+                Next Mapping <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </footer>
+
+    <!-- JavaScript Interactive & Web Speech Audio Logic -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 4;
+
+        // ==========================================
+        // 1. BUILT-IN WEB SPEECH API AUDIO NARRATOR
+        // ==========================================
+        const slideAudioScripts = {
+            1: {
+                title: "Slide 1: Situation Mapping (Preparatory Task vs. Question Paper)",
+                segments: [
+                    {
+                        text: "Welcome to Activity 4! Look at the Situation box on the left in your Preparatory Task, and compare it with the Question Paper on the right.",
+                        highlightIds: ["s1-prep-card", "s1-qp-card"]
+                    },
+                    {
+                        text: "Notice that the situation is almost identical! You are still Mike Lee, Event Officer at One Media, organising an anniversary concert, and writing an email to your colleague May Chan to express your preference with explanations.",
+                        highlightIds: ["tok-role", "qp-role", "tok-event", "qp-event", "tok-recipient", "qp-recipient", "tok-task", "qp-task"]
+                    },
+                    {
+                        text: "The only new details on exam day are the instructions to use all your notes below and write 130 to 150 words. Click the four glowing tokens on the left to beam each connection across!",
+                        highlightIds: ["qp-new-1", "qp-new-2"]
+                    }
+                ]
+            },
+            2: {
+                title: "Slide 2: Guiding Questions 1 & 2 → Option Descriptions",
+                segments: [
+                    {
+                        text: "Now let's look at Mapping Part 2: Questions 1 and 2 in your Preparatory Task.",
+                        highlightIds: ["s2-prep-card"]
+                    },
+                    {
+                        text: "Although the exact names of the options aren't shown in the preparatory task, doing online research about event ticketing platforms like HK Ticketing gives you vital background knowledge.",
+                        highlightIds: ["btn-res-1", "btn-res-2"]
+                    },
+                    {
+                        text: "On the Question Paper, Option 1 is City Tickets, which handles government events, and Option 2 is TicketEasy, which offers browser and mobile app access. Click Simulate Research to unlock the clues and match them!",
+                        highlightIds: ["opt-card-1", "opt-card-2"]
+                    }
+                ]
+            },
+            3: {
+                title: "Slide 3: Question 3 Criteria → Evaluation Table & Prompts",
+                segments: [
+                    {
+                        text: "In Mapping Part 3, look at Question 3 in the Preparatory Task. It lists key things to consider: Security, Cost, Stability, System design, Services, and Others.",
+                        highlightIds: ["s3-prep-card"]
+                    },
+                    {
+                        text: "Some of these exact criteria appear on the Question Paper's Evaluation table! For Option 1, City Tickets, you see optional services like a 24-7 live hotline, followed by a red question mark asking what benefit it brings.",
+                        highlightIds: ["crit-row-Services", "qp-eval-row-1", "btn-prompt-1"]
+                    },
+                    {
+                        text: "For Option 2, TicketEasy, there is a red question mark under the cross column asking if you have any concern—such as Cost, System design, or Others. Click the red question marks to practice elaborating!",
+                        highlightIds: ["crit-row-Cost", "crit-row-System design", "btn-prompt-2"]
+                    }
+                ]
+            },
+            4: {
+                title: "Slide 4: Final Exam Readiness Challenge",
+                segments: [
+                    {
+                        text: "Great job exploring all three mappings! Now test your understanding in Part A by matching each Preparatory Task section to its Question Paper counterpart, and answer the strategy check questions in Part B.",
+                        highlightIds: []
+                    }
+                ]
+            }
+        };
+
+        let speechRate = 1.0;
+        let isSpeaking = false;
+        let isPaused = false;
+        let currentSegmentIdx = 0;
+        let showCaptions = true;
+        let synth = window.speechSynthesis || null;
+
+        function clearAllSyncHighlights() {
+            document.querySelectorAll('.sync-highlight').forEach(el => {
+                el.classList.remove('sync-highlight');
+            });
+        }
+
+        function applySyncHighlights(ids) {
+            clearAllSyncHighlights();
+            if (!ids) return;
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('sync-highlight');
+            });
+        }
+
+        function stopAudio() {
+            if (synth) {
+                synth.cancel();
+            }
+            isSpeaking = false;
+            isPaused = false;
+            currentSegmentIdx = 0;
+            clearAllSyncHighlights();
+            updateAudioUI('stopped');
+        }
+
+        function toggleAudio() {
+            if (!synth) {
+                showToastTranscript("Audio synthesis is not supported in this browser, please read the captions below.");
+                return;
+            }
+            if (isSpeaking && !isPaused) {
+                synth.pause();
+                isPaused = true;
+                updateAudioUI('paused');
+            } else if (isSpeaking && isPaused) {
+                synth.resume();
+                isPaused = false;
+                updateAudioUI('playing');
+            } else {
+                currentSegmentIdx = 0;
+                playSlideSegments(currentSlide, 0);
+            }
+        }
+
+        function replayAudio() {
+            stopAudio();
+            setTimeout(() => {
+                playSlideSegments(currentSlide, 0);
+            }, 120);
+        }
+
+        function setSpeechRate(rate) {
+            speechRate = rate;
+            document.querySelectorAll('.rate-btn').forEach(btn => {
+                btn.className = "rate-btn px-2 py-1 rounded-md text-slate-300 hover:text-white";
+            });
+            const activeBtn = document.getElementById(`rate-${rate}`);
+            if (activeBtn) {
+                activeBtn.className = "rate-btn px-2 py-1 rounded-md bg-amber-400 text-slate-950";
+            }
+            if (isSpeaking) {
+                const seg = currentSegmentIdx;
+                stopAudio();
+                playSlideSegments(currentSlide, seg);
+            }
+        }
+
+        function toggleTranscript() {
+            showCaptions = !showCaptions;
+            const box = document.getElementById('live-transcript-box');
+            if (showCaptions) {
+                box.classList.remove('hidden');
+            } else {
+                box.classList.add('hidden');
+            }
+        }
+
+        function playSlideSegments(slideNum, segIndex) {
+            const script = slideAudioScripts[slideNum];
+            if (!script || segIndex >= script.segments.length) {
+                stopAudio();
+                updateAudioUI('finished');
+                return;
+            }
+
+            currentSegmentIdx = segIndex;
+            const segment = script.segments[segIndex];
+            document.getElementById('live-transcript-text').textContent = segment.text;
+            applySyncHighlights(segment.highlightIds);
+
+            if (!synth) {
+                updateAudioUI('stopped');
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(segment.text);
+            utterance.lang = 'en-GB';
+            utterance.rate = speechRate;
+            utterance.pitch = 1.02;
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+                isPaused = false;
+                updateAudioUI('playing');
+            };
+
+            utterance.onend = () => {
+                if (isSpeaking && !isPaused && currentSlide === slideNum) {
+                    playSlideSegments(slideNum, segIndex + 1);
+                }
+            };
+
+            utterance.onerror = () => {
+                isSpeaking = false;
+                isPaused = false;
+                updateAudioUI('stopped');
+            };
+
+            synth.speak(utterance);
+        }
+
+        function speakFeedback(text) {
+            document.getElementById('live-transcript-text').textContent = text;
+            if (!synth) return;
+            synth.cancel();
+            isSpeaking = false;
+            isPaused = false;
+            updateAudioUI('stopped');
+            const utt = new SpeechSynthesisUtterance(text);
+            utt.lang = 'en-GB';
+            utt.rate = speechRate;
+            synth.speak(utt);
+        }
+
+        function updateAudioUI(state) {
+            const icon = document.getElementById('audio-play-icon');
+            const wave = document.getElementById('audio-wave');
+            const badge = document.getElementById('audio-status-badge');
+
+            if (state === 'playing') {
+                icon.className = "fa-solid fa-pause";
+                wave.classList.remove('paused');
+                badge.textContent = "Narrating...";
+                badge.className = "text-[10px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold";
+            } else if (state === 'paused') {
+                icon.className = "fa-solid fa-play ml-0.5";
+                wave.classList.add('paused');
+                badge.textContent = "Paused";
+                badge.className = "text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700";
+            } else if (state === 'finished') {
+                icon.className = "fa-solid fa-play ml-0.5";
+                wave.classList.add('paused');
+                badge.textContent = "Completed";
+                badge.className = "text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+            } else {
+                icon.className = "fa-solid fa-play ml-0.5";
+                wave.classList.add('paused');
+                badge.textContent = "Click Play to Listen";
+                badge.className = "text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700";
+            }
+        }
+
+        // ==========================================
+        // 2. SLIDE NAVIGATION & STEPPER
+        // ==========================================
+        function goToSlide(slideNum) {
+            if (slideNum < 1 || slideNum > totalSlides) return;
+            stopAudio();
+
+            for (let i = 1; i <= totalSlides; i++) {
+                const el = document.getElementById(`slide-${i}`);
+                if (el) el.classList.add('hidden');
+            }
+
+            const activeSlide = document.getElementById(`slide-${slideNum}`);
+            if (activeSlide) activeSlide.classList.remove('hidden');
+
+            currentSlide = slideNum;
+            const script = slideAudioScripts[slideNum];
+            if (script) {
+                document.getElementById('audio-slide-title').textContent = script.title;
+                document.getElementById('live-transcript-text').textContent = script.segments[0].text;
+            }
+
+            updateNavigationUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (slideNum === 4) {
+                renderQuiz();
+            }
+        }
+
+        function updateNavigationUI() {
+            document.getElementById('slide-indicator').textContent = `Slide ${currentSlide} / ${totalSlides}`;
+
+            for (let i = 1; i <= totalSlides; i++) {
+                const btn = document.getElementById(`step-btn-${i}`);
+                if (btn) {
+                    if (i === currentSlide) {
+                        btn.className = "step-nav-btn py-2 px-2 rounded-lg text-[11px] sm:text-xs font-bold text-center transition-all bg-amber-500 text-white shadow-xs truncate";
+                    } else {
+                        btn.className = "step-nav-btn py-2 px-2 rounded-lg text-[11px] sm:text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 text-center transition-all truncate";
+                    }
+                }
+            }
+
+            document.getElementById('btn-prev-slide').disabled = (currentSlide === 1);
+            document.getElementById('btn-next-slide').disabled = (currentSlide === totalSlides);
+            document.getElementById('footer-btn-prev').disabled = (currentSlide === 1);
+
+            const footerNextBtn = document.getElementById('footer-btn-next');
+            if (currentSlide === totalSlides) {
+                footerNextBtn.innerHTML = `Finish Module <i class="fa-solid fa-check ml-2"></i>`;
+                footerNextBtn.className = "px-5 py-2 rounded-xl bg-emerald-600 text-white font-extrabold text-xs flex items-center transition-all shadow-md";
+            } else {
+                footerNextBtn.innerHTML = `Next Mapping <i class="fa-solid fa-arrow-right ml-2"></i>`;
+                footerNextBtn.className = "px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs flex items-center transition-all shadow-md";
+            }
+
+            const dotsContainer = document.getElementById('slide-dots');
+            let dotsHtml = '';
+            for (let i = 1; i <= totalSlides; i++) {
+                dotsHtml += `
+                    <button onclick="goToSlide(${i})" aria-label="Go to slide ${i}" class="h-2.5 rounded-full transition-all ${i === currentSlide ? 'bg-amber-500 w-7' : 'bg-slate-300 hover:bg-slate-400 w-2.5'}"></button>
+                `;
+            }
+            dotsContainer.innerHTML = dotsHtml;
+        }
+
+        // ==========================================
+        // 3. SLIDE 1 INTERACTIVITY: BEAM TOKENS
+        // ==========================================
+        const beamedTokens = new Set();
+        const tokenExplanations = {
+            role: "Role & Company Match: You remain Mike Lee, Event Officer at One Media. Use a semi-formal workplace tone!",
+            event: "Event Context Match: Both tasks focus on organising an anniversary concert, which requires reliable ticketing.",
+            recipient: "Recipient Match: You are writing to your colleague May Chan—greet her appropriately (e.g., 'Hi May,').",
+            task: "Writing Goal Match: Your core purpose is to state which ticketing platform you prefer and explain why."
+        };
+
+        function beamToken(key) {
+            beamedTokens.add(key);
+
+            const leftEl = document.getElementById(`tok-${key}`);
+            if (leftEl) {
+                leftEl.className = "s1-token inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-950 font-bold border border-emerald-500 transition-all cursor-pointer";
+                leftEl.querySelector('i').className = "fa-solid fa-check text-[10px] ml-1.5 text-emerald-700";
+            }
+
+            const rightEl = document.getElementById(`qp-${key}`);
+            if (rightEl) {
+                rightEl.className = "px-1.5 py-0.5 rounded transition-all bg-pink-200 text-pink-950 font-bold ring-2 ring-pink-400";
+            }
+
+            const bridgeIcon = document.getElementById('s1-bridge-icon');
+            bridgeIcon.className = "w-10 h-10 rounded-full bg-amber-400 border-2 border-pink-500 shadow-md flex items-center justify-center text-slate-950 scale-110 transition-all";
+
+            document.getElementById('s1-token-inspector').innerHTML = `
+                <span class="font-extrabold text-emerald-900"><i class="fa-solid fa-circle-check mr-1 text-emerald-600"></i>Mapped!</span> ${tokenExplanations[key]}
+            `;
+            document.getElementById('s1-progress-badge').textContent = `${beamedTokens.size} / 4`;
+
+            if (beamedTokens.size === 4) {
+                document.getElementById('s1-qp-status').textContent = "All 4 Elements Matched!";
+                document.getElementById('s1-qp-status').className = "text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md";
+
+                const new1 = document.getElementById('qp-new-1');
+                new1.className = "inline-block px-1.5 py-0.5 rounded bg-yellow-200 text-slate-900 font-bold border border-amber-400 transition-all";
+
+                const new2 = document.getElementById('qp-new-2');
+                new2.className = "p-2.5 rounded-lg border-2 border-pink-400 bg-pink-100 text-pink-950 font-extrabold text-xs transition-all flex items-center justify-between";
+                new2.innerHTML = `<span><i class="fa-solid fa-unlock mr-1.5 text-pink-600"></i> NEW ON EXAM: Write 130–150 words on the Answer Sheet provided.</span>`;
+
+                speakFeedback("Awesome! You matched all four elements and unlocked the exam-day word count requirement: 130 to 150 words.");
+            } else {
+                speakFeedback(tokenExplanations[key]);
+            }
+        }
+
+        function checkS1Answer(idx) {
+            const fb = document.getElementById('s1-check-feedback');
+            const badge = document.getElementById('s1-check-badge');
+            fb.classList.remove('hidden');
+            if (idx === 1) {
+                fb.className = "text-xs font-semibold p-3 rounded-xl bg-emerald-100 text-emerald-950 border border-emerald-300";
+                fb.innerHTML = "✓ Spot on! Everything about the situation stays the same—the Question Paper simply adds instructions to use your notes and write 130–150 words.";
+                badge.classList.remove('hidden');
+                speakFeedback("Spot on! Everything about the situation stays the same—the Question Paper simply adds instructions to use your notes and write 130 to 150 words.");
+            } else {
+                fb.className = "text-xs font-semibold p-3 rounded-xl bg-rose-100 text-rose-950 border border-rose-300";
+                fb.innerHTML = "✗ Not quite! Compare the two boxes carefully—the characters and email task stay identical, while the word count and notes instruction are added.";
+                speakFeedback("Not quite! Look closely at the bottom of the Question Paper box on the right.");
+            }
+        }
+
+        // ==========================================
+        // 4. SLIDE 2 INTERACTIVITY: RESEARCH CLUES
+        // ==========================================
+        let res1Done = false;
+        let res2Done = false;
+        let selectedClue = null;
+        const matchedClues = new Set();
+
+        function revealResearch(num) {
+            document.getElementById(`res-${num}-result`).classList.remove('hidden');
+            const btn = document.getElementById(`btn-res-${num}`);
+            btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> Researched`;
+            btn.className = "shrink-0 px-2.5 py-1 rounded-lg bg-emerald-500 text-white font-bold text-xs";
+
+            if (num === 1) res1Done = true;
+            if (num === 2) res2Done = true;
+
+            if (res1Done && res2Done) {
+                document.getElementById('s2-clue-tray').classList.remove('hidden');
+                speakFeedback("Both research questions completed! Now click Clue A or Clue B on the left, and match it to City Tickets or TicketEasy on the right.");
+            } else {
+                speakFeedback(num === 1 ? "Research 1 complete: Ticketing platforms let users book via web browsers and mobile apps." : "Research 2 complete: Popular Hong Kong platforms often handle official government events.");
+            }
+        }
+
+        function selectClue(clueKey) {
+            selectedClue = clueKey;
+            document.querySelectorAll('.clue-chip').forEach(chip => {
+                chip.classList.remove('ring-2', 'ring-slate-900', 'bg-amber-300');
+            });
+            const activeChip = document.getElementById(`clue-chip-${clueKey}`);
+            if (activeChip) {
+                activeChip.classList.add('ring-2', 'ring-slate-900', 'bg-amber-300');
+            }
+        }
+
+        function assignClueToOption(optNum) {
+            const fb = document.getElementById('s2-feedback-box');
+            if (!selectedClue) {
+                fb.classList.remove('hidden');
+                fb.className = "p-3 rounded-xl text-xs font-semibold bg-amber-100 text-amber-950 border border-amber-300";
+                fb.textContent = "First click 'Simulate Research' on Q1 & Q2, then select a Research Clue chip on the left!";
+                return;
+            }
+
+            const isCorrect = (selectedClue === 'gov' && optNum === 1) || (selectedClue === 'est' && optNum === 2);
+            fb.classList.remove('hidden');
+
+            if (isCorrect) {
+                matchedClues.add(optNum);
+                const card = document.getElementById(`opt-card-${optNum}`);
+                card.className = "p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-50/80 transition-all space-y-1.5";
+                const badge = document.getElementById(`opt-${optNum}-badge`);
+                badge.textContent = "✓ Matched with Prep Research";
+                badge.className = "text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-500 text-white";
+
+                document.getElementById('s2-progress-badge').textContent = `${matchedClues.size} / 2`;
+                fb.className = "p-3 rounded-xl text-xs font-semibold bg-emerald-100 text-emerald-950 border border-emerald-300";
+                fb.innerHTML = optNum === 1
+                    ? "✓ Correct! Researching HK Ticketing/URBTIX helps you recognize City Tickets as a top site trusted for government events."
+                    : "✓ Correct! Understanding how digital platforms operate via browser and mobile app helps you evaluate TicketEasy.";
+
+                selectedClue = null;
+                speakFeedback(fb.textContent);
+            } else {
+                fb.className = "p-3 rounded-xl text-xs font-semibold bg-rose-100 text-rose-950 border border-rose-300";
+                fb.textContent = "✗ Try again! Match the clue's keywords (government events vs. browser/app access) with the bullet points in Option 1 or Option 2.";
+                speakFeedback("Try again! Look closely at the bullet points inside Option 1 and Option 2.");
+            }
+        }
+
+        // ==========================================
+        // 5. SLIDE 3 INTERACTIVITY: CRITERIA & PROMPTS
+        // ==========================================
+        const solvedPrompts = new Set();
+
+        function selectCriterion(name) {
+            document.querySelectorAll('.crit-row').forEach(r => r.classList.remove('bg-amber-200/70'));
+            const row = document.getElementById(`crit-row-${name}`);
+            if (row) row.classList.add('bg-amber-200/70');
+
+            const detailBox = document.getElementById('s3-crit-detail');
+            const svcHighlight = document.getElementById('qp-highlight-services');
+            svcHighlight.classList.remove('bg-yellow-300', 'ring-2', 'ring-amber-500');
+
+            const infoMap = {
+                "Services": {
+                    msg: "Direct Match! 'Services' maps directly to Option 1 (City Tickets): 'a variety of optional services (24/7 live hotline & website integration)'.",
+                    highlight: "services"
+                },
+                "Cost": {
+                    msg: "Direct Match! 'Cost' appears in the Question Paper's sticky note as a possible concern (?) for Option 2 (TicketEasy)—e.g., high commission fees.",
+                    highlight: "prompt2"
+                },
+                "System design": {
+                    msg: "Direct Match! 'System design' appears in the Question Paper's sticky note as a possible concern (?) for Option 2—e.g., confusing checkout interface.",
+                    highlight: "prompt2"
+                },
+                "Others": {
+                    msg: "Direct Match! 'Others' allows you to bring in your own researched concern (such as brand reputation or limited payment methods) for Option 2.",
+                    highlight: "prompt2"
+                },
+                "Security": {
+                    msg: "Good background criterion! Even if not explicitly printed on this paper, you can mention payment security as a supporting point.",
+                    highlight: null
+                },
+                "Stability": {
+                    msg: "Good background criterion! Concert ticket sales have high traffic spikes—you can link stability to City Tickets' popularity.",
+                    highlight: null
+                }
+            };
+
+            const item = infoMap[name];
+            detailBox.innerHTML = `<span class="font-extrabold text-amber-950"><i class="fa-solid fa-bullseye text-pink-600 mr-1.5"></i>${name}:</span> ${item.msg}`;
+
+            if (item.highlight === "services") {
+                svcHighlight.classList.add('bg-yellow-300', 'ring-2', 'ring-amber-500');
+            } else if (item.highlight === "prompt2") {
+                document.getElementById('btn-prompt-2').classList.add('ring-2', 'ring-amber-500');
+                setTimeout(() => document.getElementById('btn-prompt-2').classList.remove('ring-2', 'ring-amber-500'), 1800);
+            }
+
+            speakFeedback(item.msg);
+        }
+
+        const promptScenarios = {
+            1: {
+                title: "Option 1 (City Tickets) — Elaborate on Benefit (→ ?)",
+                question: "City Tickets offers 'a variety of optional services (24/7 live hotline & website integration)'. What benefit does this bring to One Media's concert?",
+                choices: [
+                    {
+                        text: "Customers can get immediate help anytime if they face booking issues, and fans can buy tickets directly through our concert website.",
+                        correct: true,
+                        feedback: "Excellent! You connected both the 24/7 hotline (customer support) and website integration (seamless ticket buying) to clear benefits."
+                    },
+                    {
+                        text: "It means the concert tickets will be completely free for all attendees.",
+                        correct: false,
+                        feedback: "Not quite—optional services improve customer support and website convenience, not ticket prices."
+                    }
+                ]
+            },
+            2: {
+                title: "Option 2 (TicketEasy) — Choose ONE Concern (?)",
+                question: "Using the sticky note hint (Cost? System design? Others?), pick the strongest concern to explain why you do NOT prefer TicketEasy:",
+                choices: [
+                    {
+                        text: "(Cost) It may charge higher service fees or commission, increasing expenses for our company and concert-goers.",
+                        correct: true,
+                        feedback: "Well done! You picked 'Cost' from your Q3 preparatory table and elaborated clearly on its financial impact."
+                    },
+                    {
+                        text: "(System design) Its mobile app layout can be complicated for older fans to navigate when choosing seats.",
+                        correct: true,
+                        feedback: "Great job! You picked 'System design' from your Q3 preparatory table and gave a realistic user-experience concern."
+                    }
+                ]
+            }
+        };
+
+        let activePromptId = null;
+
+        function openPromptBuilder(promptId) {
+            activePromptId = promptId;
+            const data = promptScenarios[promptId];
+            const box = document.getElementById('prompt-builder-box');
+            box.classList.remove('hidden');
+
+            document.getElementById('pb-title').textContent = data.title;
+            document.getElementById('pb-question').textContent = data.question;
+
+            const optsContainer = document.getElementById('pb-options');
+            optsContainer.innerHTML = data.choices.map((c, idx) => `
+                <button onclick="selectPromptChoice(${promptId}, ${idx})" class="w-full text-left p-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 text-xs text-slate-100 transition-all">
+                    ${c.text}
+                </button>
+            `).join('');
+        }
+
+        function closePromptBuilder() {
+            document.getElementById('prompt-builder-box').classList.add('hidden');
+        }
+
+        function selectPromptChoice(promptId, choiceIdx) {
+            const choice = promptScenarios[promptId].choices[choiceIdx];
+            if (choice.correct) {
+                solvedPrompts.add(promptId);
+                const btn = document.getElementById(`btn-prompt-${promptId}`);
+                btn.className = "w-full text-left p-2 rounded-lg bg-emerald-100 border border-emerald-500 text-emerald-950 font-bold text-xs";
+                btn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> ${choice.text}`;
+                document.getElementById('s3-progress-badge').textContent = `${solvedPrompts.size} / 2`;
+                closePromptBuilder();
+            }
+            speakFeedback(choice.feedback);
+        }
+
+        // ==========================================
+        // 6. SLIDE 4: FINAL CHALLENGE & QUIZ
+        // ==========================================
+        const matchCorrectAnswers = ["sit", "desc", "eval"];
+        const matchUserScores = [false, false, false];
+
+        function checkMatchAnswer(idx, val) {
+            const fb = document.getElementById(`match-fb-${idx}`);
+            const sel = document.getElementById(`match-sel-${idx}`);
+            fb.classList.remove('hidden');
+
+            if (val === matchCorrectAnswers[idx]) {
+                matchUserScores[idx] = true;
+                fb.className = "text-[11px] font-bold text-emerald-700";
+                fb.textContent = "✓ Correct mapping!";
+                sel.classList.add('border-emerald-500', 'bg-emerald-50');
+            } else {
+                matchUserScores[idx] = false;
+                fb.className = "text-[11px] font-bold text-rose-700";
+                fb.textContent = "✗ Check the previous slides and try again.";
+                sel.classList.remove('border-emerald-500', 'bg-emerald-50');
+            }
+            updateTotalQuizScore();
+        }
+
+        const quizQuestions = [
+            {
+                id: 1,
+                question: "1. Why should you put effort into completing Question 3's table ('Things to consider') before the assessment?",
+                options: [
+                    "Because the teacher collects it as 100% of your final exam grade.",
+                    "Because several items from that column (Services, Cost, System design) appear as prompts on the Question Paper.",
+                    "Because you are allowed to copy the entire table word-for-word without writing an email."
+                ],
+                correct: 1,
+                explanation: "Items under 'Things to consider' directly appear as evaluation prompts on the Question Paper, giving you ready-made ideas!"
+            },
+            {
+                id: 2,
+                question: "2. On the Question Paper, Option 1 (City Tickets) has a 👍 symbol next to it. What does this tell you to do in your email?",
+                options: [
+                    "Recommend City Tickets to May Chan and explain the benefits of its optional services.",
+                    "Tell May Chan not to use City Tickets because it is too popular.",
+                    "Ignore Option 2 completely and write only 50 words."
+                ],
+                correct: 0,
+                explanation: "The 👍 indicates your preferred option (City Tickets). You should recommend it with clear explanations while addressing concerns about TicketEasy."
+            },
+            {
+                id: 3,
+                question: "3. What is the required word count shown at the bottom of the Question Paper situation?",
+                options: [
+                    "80–100 words",
+                    "130–150 words",
+                    "250–300 words"
+                ],
+                correct: 1,
+                explanation: "The Question Paper instructs you to write 130–150 words on the Answer Sheet provided."
+            }
+        ];
+
+        let quizAnswers = {};
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            let html = '';
+
+            quizQuestions.forEach((q) => {
+                html += `
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2.5">
+                        <h4 class="text-xs sm:text-sm font-bold text-slate-900">${q.question}</h4>
+                        <div class="space-y-2">
+                `;
+
+                q.options.forEach((opt, optIdx) => {
+                    const isSelected = quizAnswers[q.id] === optIdx;
+                    let btnStyle = "bg-white border-slate-200 text-slate-700 hover:bg-slate-100";
+
+                    if (isSelected) {
+                        btnStyle = optIdx === q.correct
+                            ? "bg-emerald-100 border-emerald-500 text-emerald-950 font-bold"
+                            : "bg-rose-100 border-rose-500 text-rose-950 font-bold";
+                    }
+
+                    html += `
+                        <button onclick="answerQuiz(${q.id}, ${optIdx})" class="w-full text-left p-3 rounded-lg border text-xs transition-all flex items-center justify-between ${btnStyle}">
+                            <span>${opt}</span>
+                            ${isSelected ? (optIdx === q.correct ? '<i class="fa-solid fa-circle-check text-emerald-600"></i>' : '<i class="fa-solid fa-circle-xmark text-rose-600"></i>') : ''}
+                        </button>
+                    `;
+                });
+
+                if (quizAnswers[q.id] !== undefined) {
+                    const isCorrect = quizAnswers[q.id] === q.correct;
+                    html += `
+                        <div class="mt-2 p-2.5 rounded-lg text-xs ${isCorrect ? 'bg-emerald-100/80 text-emerald-950 border border-emerald-300' : 'bg-rose-100/80 text-rose-950 border border-rose-300'}">
+                            <strong>${isCorrect ? '✓ Correct!' : '✗ Incorrect.'}</strong> ${q.explanation}
+                        </div>
+                    `;
+                }
+
+                html += `</div></div>`;
+            });
+
+            container.innerHTML = html;
+            updateTotalQuizScore();
+        }
+
+        function answerQuiz(qId, optionIdx) {
+            quizAnswers[qId] = optionIdx;
+            renderQuiz();
+            const q = quizQuestions.find(item => item.id === qId);
+            if (q) {
+                speakFeedback(optionIdx === q.correct ? `Correct! ${q.explanation}` : "Not quite. Review the explanation on screen.");
+            }
+        }
+
+        function updateTotalQuizScore() {
+            const partAScore = matchUserScores.filter(Boolean).length;
+            let partBScore = 0;
+            quizQuestions.forEach(q => {
+                if (quizAnswers[q.id] === q.correct) partBScore++;
+            });
+
+            const total = partAScore + partBScore;
+            document.getElementById('quiz-score-badge').textContent = `Total Score: ${total} / 6`;
+
+            if (partAScore === 3 && Object.keys(quizAnswers).length === quizQuestions.length) {
+                const box = document.getElementById('quiz-completion-box');
+                box.classList.remove('hidden');
+                document.getElementById('quiz-final-msg').textContent = `You scored ${total} out of 6! You now know exactly how the Preparatory Task's Situation, Research Questions (Q1 & Q2), and Criteria Table (Q3) connect to every part of the Question Paper.`;
+            }
+        }
+
+        function resetQuiz() {
+            quizAnswers = {};
+            for (let i = 0; i < 3; i++) {
+                matchUserScores[i] = false;
+                const sel = document.getElementById(`match-sel-${i}`);
+                if (sel) {
+                    sel.value = "";
+                    sel.classList.remove('border-emerald-500', 'bg-emerald-50');
+                }
+                const fb = document.getElementById(`match-fb-${i}`);
+                if (fb) fb.classList.add('hidden');
+            }
+            document.getElementById('quiz-completion-box').classList.add('hidden');
+            renderQuiz();
+        }
+
+        // Keyboard arrow navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentSlide < totalSlides) {
+                goToSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft' && currentSlide > 1) {
+                goToSlide(currentSlide - 1);
+            }
+        });
+
+        // Initialize view on load
+        window.onload = function() {
+            goToSlide(1);
+        };
+    </script>
+</body>
+</html>
